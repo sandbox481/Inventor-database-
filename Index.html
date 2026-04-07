@@ -1,1 +1,568 @@
+<!doctype html>
+<html lang="en" class="h-full">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Famous Inventors and Innovators</title>
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;800&amp;family=DM+Sans:wght@300;400;500;600&amp;display=swap" rel="stylesheet">
+  <style>
+    html, body { height: 100%; margin: 0; }
+    * { box-sizing: border-box; }
+    .font-display { font-family: 'Playfair Display', Georgia, serif; }
+    .font-body { font-family: 'DM Sans', sans-serif; }
+    .card-hover { transition: transform 0.25s ease, box-shadow 0.25s ease; }
+    .card-hover:hover { transform: translateY(-4px); box-shadow: 0 12px 40px rgba(0,0,0,0.12); }
+    .fade-in { animation: fadeIn 0.4s ease forwards; opacity: 0; }
+    @keyframes fadeIn { to { opacity: 1; } }
+    .stagger-1 { animation-delay: 0.05s; }
+    .stagger-2 { animation-delay: 0.1s; }
+    .stagger-3 { animation-delay: 0.15s; }
+    .stagger-4 { animation-delay: 0.2s; }
+    .modal-overlay { background: rgba(0,0,0,0.5); backdrop-filter: blur(4px); }
+    .toast-slide { animation: toastIn 0.3s ease forwards; }
+    @keyframes toastIn { from { transform: translateY(-20px); opacity:0; } to { transform: translateY(0); opacity:1; } }
+    input:focus, textarea:focus, select:focus { outline: none; }
+  </style>
+  <style>body { box-sizing: border-box; }</style>
+  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+  <script src="/_sdk/element_sdk.js" type="text/javascript"></script>
+ </head>
+ <body class="h-full m-0 p-0 font-body" style="background:#0f1117;">
+  <div id="app" class="w-full h-full flex flex-col" style="margin:0;padding:0;overflow:hidden;"><!-- List View -->
+   <div id="list-view" class="w-full h-full flex flex-col" style="margin:0;padding:0;overflow:hidden;position:relative;"><!-- Login Screen -->
+    <div id="login-screen" class="hidden fixed inset-0 z-50 modal-overlay flex items-center justify-center p-4">
+     <div class="w-full max-w-md rounded-2xl p-6" style="background:#1e2030; border:1px solid #2a2d3a;">
+      <div class="flex items-center justify-center gap-3 mb-6">
+       <div class="w-10 h-10 rounded-lg flex items-center justify-center" style="background:#ffd700;"><span style="font-family:'Playfair Display', Georgia, serif; font-size:24px; font-weight:800; color:#0f1117; font-style:italic; letter-spacing:-1px;">I</span>
+       </div>
+       <h2 class="font-display text-xl font-bold" style="color:#f0ece2;">Admin Access</h2>
+      </div>
+      <p class="text-center text-sm mb-5" style="color:#8b8fa3;">Enter admin username</p>
+      <div class="space-y-3">
+       <div><label for="admin-username" class="block text-xs font-medium mb-1" style="color:#8b8fa3;">Username</label> <input id="admin-username" type="text" class="w-full px-3 py-2.5 rounded-lg text-sm" style="background:#161822;border:1px solid #2a2d3a;color:#f0ece2;" placeholder="admin">
+       </div><button id="login-btn" type="button" class="w-full py-3 rounded-lg text-sm font-semibold mt-4 transition-all" style="background:#c9a227;color:#0f1117;">Sign In</button> <button id="close-login-btn" type="button" class="w-full py-2 rounded-lg text-sm font-medium mt-2 transition-all" style="background:#2a2d3a;color:#8b8fa3;">Cancel</button>
+      </div>
+     </div>
+    </div><!-- Detail View -->
+    <div id="detail-view" class="hidden w-full h-full overflow-auto flex flex-col">
+     <header class="w-full px-6 py-4 flex items-center gap-3" style="background:#161822; border-bottom: 1px solid #2a2d3a;">
+      <button id="back-btn" type="button" class="flex items-center justify-center w-9 h-9 rounded-lg transition-all" style="background:#2a2d3a;color:#8b8fa3;"><i data-lucide="arrow-left" style="width:18px;height:18px;"></i></button>
+      <h1 id="detail-title" class="font-display font-bold text-lg flex-1" style="color:#f0ece2;">Inventor Name</h1><button id="detail-edit-btn" type="button" class="hidden flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all" style="background:#c9a227; color:#0f1117;"><i data-lucide="edit" style="width:15px;height:15px;"></i> <span>Edit</span></button>
+     </header>
+     <main class="w-full px-6 py-8 flex-1">
+      <div class="max-w-2xl mx-auto">
+       <h2 id="detail-name" class="font-display text-3xl font-bold mb-6" style="color:#f0ece2;">Inventor Name</h2>
+       <div class="flex items-center gap-4 mb-8">
+        <img id="detail-image" src="" alt="Profile" class="hidden w-20 h-20 rounded-lg object-cover" style="background:#2a2d3a;"> <span id="detail-emoji" class="text-6xl">🔧</span>
+        <div>
+         <p id="detail-lifespan" class="text-sm" style="color:#8b8fa3;">1800 – 1880</p>
+        </div>
+       </div>
+       <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
+        <div class="rounded-lg p-4" style="background:#1e2030; border:1px solid #2a2d3a;">
+         <p class="text-xs font-medium mb-2" style="color:#8b8fa3;">Country</p>
+         <p id="detail-country" class="font-semibold" style="color:#f0ece2;">—</p>
+        </div>
+        <div class="rounded-lg p-4" style="background:#1e2030; border:1px solid #2a2d3a;">
+         <p class="text-xs font-medium mb-2" style="color:#8b8fa3;">Born</p>
+         <p id="detail-born" class="font-semibold" style="color:#f0ece2;">—</p>
+        </div>
+        <div class="rounded-lg p-4" style="background:#1e2030; border:1px solid #2a2d3a;">
+         <p class="text-xs font-medium mb-2" style="color:#8b8fa3;">Died</p>
+         <p id="detail-died" class="font-semibold" style="color:#f0ece2;">—</p>
+        </div>
+       </div>
+       <div class="rounded-lg p-6 mb-8" style="background:#1e2030; border:1px solid #2a2d3a;">
+        <p class="text-xs font-medium mb-3" style="color:#8b8fa3;">Key Invention</p>
+        <div class="inline-block px-4 py-2 rounded-lg text-sm font-semibold" style="background:#c9a22722;color:#c9a227;" id="detail-invention">
+         Invention
+        </div>
+       </div>
+       <div class="rounded-lg p-6" style="background:#1e2030; border:1px solid #2a2d3a;">
+        <p class="text-xs font-medium mb-3" style="color:#8b8fa3;">About</p>
+        <p id="detail-description" class="text-sm leading-relaxed" style="color:#f0ece2;">No description available.</p>
+       </div>
+       <div class="rounded-lg p-6" style="background:#1e2030; border:1px solid #2a2d3a;">
+        <p class="text-xs font-medium mb-3" style="color:#8b8fa3;">Related People</p>
+        <p id="detail-related" class="text-sm leading-relaxed" style="color:#f0ece2;">—</p>
+       </div>
+      </div>
+     </main>
+    </div>
+   </div><!-- Toast -->
+   <div id="toast" class="fixed top-4 right-4 z-50 hidden toast-slide px-5 py-3 rounded-lg text-sm font-medium shadow-xl" style="color:#f0ece2;"></div><!-- Header -->
+   <header class="w-full fixed top-0 left-0 right-0 z-30 px-6 py-6 flex items-center justify-between" style="background:#1e2030; border-bottom: 1px solid #2a2d3a;">
+    <div class="flex items-center gap-3">
+     <div class="w-9 h-9 rounded-lg flex items-center justify-center" style="background:#ffd700;"><span style="font-family:'Playfair Display', Georgia, serif; font-size:20px; font-weight:800; color:#0f1117; font-style:italic; letter-spacing:-1px;">I</span>
+     </div>
+     <h1 id="site-title" class="font-display font-bold text-xl" style="color:#f0ece2;">Famous Inventors and Innovators</h1>
+    </div>
+    <div class="flex items-center gap-3"><button id="admin-toggle-btn" type="button" class="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all" style="background:#c9a227; color:#0f1117;"> <i data-lucide="lock" style="width:15px;height:15px;"></i> <span>Admin</span> </button> <button id="logout-btn" type="button" class="hidden flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all" style="background:#c9a227; color:#0f1117;"> <i data-lucide="log-out" style="width:15px;height:15px;"></i> <span>Logout</span> </button>
+    </div>
+   </header><!-- Search and Controls Container -->
+   <section class="w-full fixed top-20 left-0 right-0 z-20 px-6 py-4" style="background:#1e2030; border-bottom: 1px solid #2a2d3a;">
+    <div class="max-w-6xl mx-auto">
+     <h2 id="hero-subtitle" class="font-display text-2xl md:text-3xl font-700 fade-in mb-4" style="color:#f0ece2;">Explore the minds that shaped our world</h2>
+     <div class="flex items-center gap-3">
+      <div class="flex-1 relative fade-in stagger-1"><i data-lucide="search" class="absolute left-4 top-1/2 -translate-y-1/2" style="width:18px;height:18px;color:#8b8fa3;"></i> <input id="search-input" type="text" placeholder="Search by name, invention, or country..." class="w-full pl-12 pr-4 py-3.5 rounded-xl text-sm font-body" style="background:#161822; border:1px solid #2a2d3a; color:#f0ece2;" oninput="renderCards()">
+      </div>
+      <div id="admin-add-area" class="fade-in stagger-2" style="display:none;"><button id="add-btn" type="button" class="inline-flex items-center gap-2 px-5 py-3 rounded-lg text-sm font-semibold transition-all" style="background:#c9a227; color:#0f1117;"> <i data-lucide="plus" style="width:16px;height:16px;"></i> <span class="hidden sm:inline">Add</span> </button>
+      </div>
+     </div>
+    </div>
+   </section><!-- Cards Grid -->
+   <main class="w-full flex-1 overflow-auto px-6 py-8" style="margin-top: 220px; background:#0f1117; min-height: calc(100% - 220px);">
+    <div id="cards-grid" class="max-w-6xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 pb-12"></div>
+    <p id="no-results" class="hidden text-center py-12 text-sm" style="color:#8b8fa3;">No inventors found matching your search.</p>
+   </main><!-- Modal -->
+   <div id="modal-overlay" class="fixed inset-0 z-40 hidden modal-overlay flex items-center justify-center p-4">
+    <div class="rounded-2xl p-6 relative overflow-auto" style="background:#1e2030; border:1px solid #2a2d3a; width:500px; height:500px; max-width:100%;"><button id="close-modal-btn" type="button" class="absolute top-4 right-4 z-10" style="color:#8b8fa3;"><i data-lucide="x" style="width:20px;height:20px;"></i></button>
+     <h3 id="modal-title" class="font-display text-xl font-bold mb-4 pr-8" style="color:#f0ece2;">Add Inventor</h3>
+     <form id="inventor-form" class="space-y-2" style="max-height:calc(500px - 100px); overflow-y:auto; padding-right:8px;">
+      <div><label for="f-name" class="block text-xs font-medium mb-1" style="color:#8b8fa3;">Name *</label> <input id="f-name" type="text" required class="w-full px-3 py-2 rounded-lg text-sm" style="background:#161822;border:1px solid #2a2d3a;color:#f0ece2;">
+      </div>
+      <div class="grid grid-cols-2 gap-2">
+       <div><label for="f-born" class="block text-xs font-medium mb-1" style="color:#8b8fa3;">Born</label> <input id="f-born" type="text" class="w-full px-3 py-2 rounded-lg text-sm" style="background:#161822;border:1px solid #2a2d3a;color:#f0ece2;" placeholder="e.g. 1856">
+       </div>
+       <div><label for="f-died" class="block text-xs font-medium mb-1" style="color:#8b8fa3;">Died</label> <input id="f-died" type="text" class="w-full px-3 py-2 rounded-lg text-sm" style="background:#161822;border:1px solid #2a2d3a;color:#f0ece2;" placeholder="e.g. 1943">
+       </div>
+      </div>
+      <div><label for="f-country" class="block text-xs font-medium mb-1" style="color:#8b8fa3;">Country</label> <input id="f-country" type="text" class="w-full px-3 py-2 rounded-lg text-sm" style="background:#161822;border:1px solid #2a2d3a;color:#f0ece2;">
+      </div>
+      <div><label for="f-invention" class="block text-xs font-medium mb-1" style="color:#8b8fa3;">Key Invention *</label> <input id="f-invention" type="text" required class="w-full px-3 py-2 rounded-lg text-sm" style="background:#161822;border:1px solid #2a2d3a;color:#f0ece2;">
+      </div>
+      <div><label for="f-desc" class="block text-xs font-medium mb-1" style="color:#8b8fa3;">Description</label> <textarea id="f-desc" rows="1" class="w-full px-3 py-2 rounded-lg text-sm resize-none" style="background:#161822;border:1px solid #2a2d3a;color:#f0ece2;"></textarea>
+      </div>
+      <div><label for="f-related" class="block text-xs font-medium mb-1" style="color:#8b8fa3;">Related People</label> <input id="f-related" type="text" class="w-full px-3 py-2 rounded-lg text-sm" style="background:#161822;border:1px solid #2a2d3a;color:#f0ece2;" placeholder="e.g. Marie Curie">
+      </div>
+      <div><label for="f-image" class="block text-xs font-medium mb-1" style="color:#8b8fa3;">Picture URL</label> <input id="f-image" type="text" class="w-full px-3 py-2 rounded-lg text-sm" style="background:#161822;border:1px solid #2a2d3a;color:#f0ece2;" placeholder="https://...">
+      </div><button id="form-submit-btn" type="submit" class="w-full py-2.5 rounded-lg text-sm font-semibold mt-3 transition-all" style="background:#c9a227;color:#0f1117;">Save Inventor</button>
+     </form>
+    </div>
+   </div><!-- Delete Confirm Modal -->
+   <div id="delete-overlay" class="fixed inset-0 z-50 hidden modal-overlay flex items-center justify-center p-4">
+    <div class="w-full max-w-sm rounded-2xl p-6 text-center" style="background:#1e2030;border:1px solid #2a2d3a;">
+     <div class="w-12 h-12 rounded-full mx-auto mb-4 flex items-center justify-center" style="background:#3a1c1c;"><i data-lucide="trash-2" style="width:22px;height:22px;color:#e05555;"></i>
+     </div>
+     <h3 class="font-display text-lg font-bold mb-2" style="color:#f0ece2;">Delete Inventor?</h3>
+     <p id="delete-name" class="text-sm mb-5" style="color:#8b8fa3;">This action cannot be undone.</p>
+     <div class="flex gap-3"><button id="cancel-delete-btn" type="button" class="flex-1 py-2.5 rounded-lg text-sm font-medium" style="background:#2a2d3a;color:#8b8fa3;">Cancel</button> <button id="confirm-delete-btn" type="button" class="flex-1 py-2.5 rounded-lg text-sm font-semibold" style="background:#e05555;color:#f0ece2;">Delete</button>
+     </div>
+    </div>
+   </div>
+  </div>
+  <script>
+// Admin credentials
+const ADMIN_USERNAME = 'admin';
 
+// Reference inventors (no database)
+const REFERENCE_INVENTORS = [];
+
+const EMOJI_MAP = {};
+
+let userInventors = [];
+let isLoggedIn = false;
+let editingInventor = null;
+let deletingInventor = null;
+
+// Load inventors from local storage on page load
+function loadInventorsFromStorage() {
+  const stored = localStorage.getItem('userInventors');
+  if (stored) {
+    try {
+      userInventors = JSON.parse(stored);
+    } catch (err) {
+      console.error('Failed to load inventors from storage:', err);
+      userInventors = [];
+    }
+  }
+}
+
+// Save inventors to local storage
+function saveInventorsToStorage() {
+  try {
+    localStorage.setItem('userInventors', JSON.stringify(userInventors));
+  } catch (err) {
+    console.error('Failed to save inventors to storage:', err);
+  }
+}
+
+// Initialize on page load
+loadInventorsFromStorage();
+
+// Event listeners
+document.getElementById('admin-toggle-btn').addEventListener('click', () => {
+  document.getElementById('login-screen').classList.toggle('hidden');
+});
+document.getElementById('close-login-btn').addEventListener('click', () => {
+  document.getElementById('login-screen').classList.add('hidden');
+});
+document.getElementById('login-btn').addEventListener('click', (e) => {
+  e.preventDefault();
+  handleLogin();
+});
+document.getElementById('logout-btn').addEventListener('click', handleLogout);
+document.getElementById('add-btn').addEventListener('click', () => {
+  openModal();
+});
+document.getElementById('inventor-form').addEventListener('submit', handleFormSubmit);
+document.getElementById('cancel-delete-btn').addEventListener('click', closeDeleteModal);
+document.getElementById('confirm-delete-btn').addEventListener('click', confirmDelete);
+document.getElementById('back-btn').addEventListener('click', showListView);
+document.getElementById('detail-edit-btn').addEventListener('click', () => {
+  if (editingInventor) openModal(editingInventor);
+});
+
+function handleLogin() {
+  const username = document.getElementById('admin-username').value.trim().toLowerCase();
+  
+  if (username === 'admin') {
+    isLoggedIn = true;
+    document.getElementById('login-screen').classList.add('hidden');
+    document.getElementById('admin-username').value = '';
+    document.getElementById('admin-add-area').style.display = 'flex';
+    document.getElementById('admin-toggle-btn').style.display = 'none';
+    document.getElementById('logout-btn').classList.remove('hidden');
+    document.getElementById('logout-btn').style.display = 'flex';
+    showToast('Welcome, Admin!');
+    renderCards();
+    lucide.createIcons();
+  } else {
+    showToast('Invalid username.', true);
+  }
+}
+
+function handleLogout() {
+  isLoggedIn = false;
+  userInventors = [];
+  document.getElementById('admin-username').value = '';
+  document.getElementById('login-screen').classList.add('hidden');
+  document.getElementById('admin-add-area').style.display = 'none';
+  document.getElementById('admin-toggle-btn').style.display = 'flex';
+  document.getElementById('logout-btn').classList.add('hidden');
+  document.getElementById('logout-btn').style.display = 'none';
+  closeModal();
+  closeDeleteModal();
+  renderCards();
+  showToast('Logged out.');
+}
+
+function getInventors() {
+  return [...REFERENCE_INVENTORS, ...userInventors];
+}
+
+function renderCards() {
+  const query = (document.getElementById('search-input').value || '').toLowerCase();
+  loadInventorsFromStorage();
+  const inventors = getInventors();
+  const filtered = inventors.filter(inv => {
+    if (!query) return true;
+    // Search in: name, invention, country, description, birth/death years, and related people
+    const name = (inv.name || '').toLowerCase();
+    const invention = (inv.invention || '').toLowerCase();
+    const country = (inv.country || '').toLowerCase();
+    const description = (inv.description || '').toLowerCase();
+    const relatedPeople = (inv.related_people || '').toLowerCase();
+    const birthYear = (inv.year_born || '').toLowerCase();
+    const deathYear = (inv.year_died || '').toLowerCase();
+    
+    return name.includes(query) || 
+           invention.includes(query) || 
+           country.includes(query) || 
+           description.includes(query) || 
+           relatedPeople.includes(query) ||
+           birthYear.includes(query) ||
+           deathYear.includes(query);
+  });
+
+  const grid = document.getElementById('cards-grid');
+  const noResults = document.getElementById('no-results');
+  const cfg = {
+    surface_color: '#1e2030',
+    text_color: '#f0ece2',
+    primary_color: '#c9a227',
+    secondary_color: '#8b8fa3',
+    font_family: 'Playfair Display'
+  };
+
+  if (filtered.length === 0) {
+    grid.innerHTML = '';
+    noResults.style.display = 'block';
+    return;
+  }
+  noResults.style.display = 'none';
+
+  const existingMap = new Map([...grid.children].map(el => [el.dataset.id, el]));
+  const newIds = new Set(filtered.map(i => i.id));
+
+  existingMap.forEach((el, id) => { if (!newIds.has(id)) el.remove(); });
+
+  filtered.forEach((inv, idx) => {
+    let card = grid.querySelector(`[data-id="${inv.id}"]`);
+    if (!card) {
+      card = document.createElement('div');
+      card.dataset.id = inv.id;
+      card.className = 'rounded-xl p-5 card-hover fade-in';
+      card.style.cssText = `background:${cfg.surface_color};border:1px solid #2a2d3a;animation-delay:${idx*0.04}s;`;
+      grid.appendChild(card);
+    }
+    const emoji = EMOJI_MAP[inv.id] || '🔧';
+    const lifespan = inv.year_born ? `${inv.year_born}${inv.year_died ? ' – '+inv.year_died : ' – present'}` : '';
+    const isUserAdded = userInventors.find(u => u.id === inv.id);
+    const adminBtns = isLoggedIn ? `
+      <div class="flex gap-2 mt-3 pt-3" style="border-top:1px solid #2a2d3a;">
+        <button class="edit-btn flex items-center gap-1 px-3 py-1.5 rounded-md text-xs font-medium transition-all" data-id="${inv.id}" style="background:#2a2d3a;color:${cfg.secondary_color};"><i data-lucide="edit" style="width:12px;height:12px;"></i> Edit</button>
+        ${isUserAdded ? `<button class="delete-btn flex items-center gap-1 px-3 py-1.5 rounded-md text-xs font-medium transition-all" data-id="${inv.id}" style="background:#3a1c1c;color:#e05555;"><i data-lucide="trash-2" style="width:12px;height:12px;"></i> Delete</button>` : ''}
+      </div>` : '';
+
+    card.innerHTML = `
+      <div class="flex items-start gap-3 mb-3">
+        <span class="text-2xl">${emoji}</span>
+        <div class="flex-1 min-w-0">
+          <h3 class="font-display font-bold text-base truncate" style="color:${cfg.text_color};font-family:'${cfg.font_family}',Georgia,serif;">${inv.name}</h3>
+          <p class="text-xs mt-0.5" style="color:${cfg.secondary_color};">${lifespan}</p>
+        </div>
+      </div>
+      ${inv.country ? `<p class="text-xs mb-2" style="color:${cfg.secondary_color};"><i data-lucide="map-pin" style="width:11px;height:11px;display:inline;vertical-align:-1px;"></i> ${inv.country}</p>` : ''}
+      <div class="inline-block px-2.5 py-1 rounded-md text-xs font-semibold mb-2" style="background:${cfg.primary_color}22;color:${cfg.primary_color};">${inv.invention}</div>
+      <div class="desc-content hidden p-2 rounded-md mt-2" style="background:#161822;">
+        <p class="text-xs leading-relaxed" style="color:${cfg.secondary_color};">${inv.description||''}</p>
+      </div>
+      <button type="button" class="toggle-desc-btn text-xs font-medium mt-2 px-2 py-1 rounded-md transition-all" style="background:#2a2d3a;color:${cfg.secondary_color};">Show Details</button>
+      ${adminBtns}
+    `;
+  });
+
+  // Add event listeners to dynamically created buttons
+  document.querySelectorAll('.edit-btn').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const id = e.currentTarget.dataset.id;
+      const inv = getInventors().find(i => i.id === id);
+      if (inv) openModal(inv);
+    });
+  });
+
+  document.querySelectorAll('.delete-btn').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const id = e.currentTarget.dataset.id;
+      const inv = userInventors.find(i => i.id === id);
+      if (inv) deleteInventor(inv);
+    });
+  });
+
+  document.querySelectorAll('.toggle-desc-btn').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const card = e.currentTarget.closest('[data-id]');
+      const content = card.querySelector('.desc-content');
+      const isHidden = content.classList.contains('hidden');
+      if (isHidden) {
+        content.classList.remove('hidden');
+        e.currentTarget.textContent = 'Hide Details';
+      } else {
+        content.classList.add('hidden');
+        e.currentTarget.textContent = 'Show Details';
+      }
+    });
+  });
+
+  document.querySelectorAll('[data-id]').forEach(card => {
+    card.addEventListener('click', (e) => {
+      // Don't navigate if clicking edit/delete/toggle buttons
+      if (e.target.closest('.edit-btn') || e.target.closest('.delete-btn') || e.target.closest('.toggle-desc-btn')) return;
+      const id = card.dataset.id;
+      const inv = getInventors().find(i => i.id === id);
+      if (inv) showDetailView(inv);
+    });
+    card.style.cursor = 'pointer';
+  });
+
+  lucide.createIcons();
+}
+
+function openModal(inventor) {
+  editingInventor = inventor;
+  document.getElementById('modal-title').textContent = inventor ? 'Edit Inventor' : 'Add Inventor';
+  document.getElementById('form-submit-btn').textContent = inventor ? 'Update Inventor' : 'Save Inventor';
+  document.getElementById('f-name').value = inventor ? inventor.name||'' : '';
+  document.getElementById('f-born').value = inventor ? inventor.year_born||'' : '';
+  document.getElementById('f-died').value = inventor ? inventor.year_died||'' : '';
+  document.getElementById('f-country').value = inventor ? inventor.country||'' : '';
+  document.getElementById('f-invention').value = inventor ? inventor.invention||'' : '';
+  document.getElementById('f-desc').value = inventor ? inventor.description||'' : '';
+  document.getElementById('f-related').value = inventor ? inventor.related_people||'' : '';
+  document.getElementById('f-image').value = inventor ? inventor.image_url||'' : '';
+  document.getElementById('modal-overlay').style.display = 'flex';
+}
+
+function closeModal() {
+  document.getElementById('modal-overlay').style.display = 'none';
+  document.getElementById('inventor-form').reset();
+  editingInventor = null;
+}
+
+function showToast(msg, isError) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.style.background = isError ? '#e05555' : '#2d6a4f';
+  t.style.display = 'block';
+  setTimeout(() => { t.style.display = 'none'; }, 2500);
+}
+
+async function handleFormSubmit(e) {
+  e.preventDefault();
+  
+  const data = {
+    id: editingInventor?.id || 'inv-' + Date.now(),
+    name: document.getElementById('f-name').value.trim(),
+    year_born: document.getElementById('f-born').value.trim(),
+    year_died: document.getElementById('f-died').value.trim(),
+    country: document.getElementById('f-country').value.trim(),
+    invention: document.getElementById('f-invention').value.trim(),
+    description: document.getElementById('f-desc').value.trim(),
+    related_people: document.getElementById('f-related').value.trim(),
+    image_url: document.getElementById('f-image').value.trim(),
+  };
+
+  if (!data.name || !data.invention) {
+    showToast('Name and Invention are required.', true);
+    return;
+  }
+
+  const submitBtn = document.getElementById('form-submit-btn');
+  submitBtn.disabled = true;
+  submitBtn.textContent = 'Saving...';
+
+  try {
+    if (editingInventor) {
+      const idx = userInventors.findIndex(u => u.id === editingInventor.id);
+      if (idx !== -1) {
+        userInventors[idx] = data;
+        showToast('Inventor updated!');
+      }
+    } else {
+      userInventors.push(data);
+      showToast('Inventor added!');
+    }
+    saveInventorsToStorage();
+    closeModal();
+    showListView();
+    loadInventorsFromStorage();
+    renderCards();
+  } catch (err) {
+    showToast('Error: ' + (err?.message || err), true);
+  } finally {
+    submitBtn.disabled = false;
+    submitBtn.textContent = editingInventor ? 'Update Inventor' : 'Save Inventor';
+  }
+}
+
+function deleteInventor(inventor) {
+  deletingInventor = inventor;
+  document.getElementById('delete-name').textContent = `Delete "${inventor.name}"? This cannot be undone.`;
+  document.getElementById('delete-overlay').style.display = 'flex';
+}
+
+function closeDeleteModal() {
+  document.getElementById('delete-overlay').style.display = 'none';
+  deletingInventor = null;
+}
+
+function showListView() {
+  document.getElementById('list-view').style.display = 'flex';
+  document.getElementById('detail-view').classList.add('hidden');
+  editingInventor = null;
+}
+
+function showDetailView(inventor) {
+  editingInventor = inventor;
+  const lifespan = inventor.year_born ? `${inventor.year_born}${inventor.year_died ? ' – '+inventor.year_died : ' – present'}` : '—';
+  const emoji = EMOJI_MAP[inventor.id] || '🔧';
+  
+  document.getElementById('detail-title').textContent = inventor.name;
+  document.getElementById('detail-name').textContent = inventor.name;
+  document.getElementById('detail-lifespan').textContent = lifespan;
+  document.getElementById('detail-emoji').textContent = emoji;
+  
+  const imgEl = document.getElementById('detail-image');
+  if (inventor.image_url) {
+    imgEl.src = inventor.image_url;
+    imgEl.classList.remove('hidden');
+  } else {
+    imgEl.classList.add('hidden');
+  }
+  
+  document.getElementById('detail-country').textContent = inventor.country || '—';
+  document.getElementById('detail-born').textContent = inventor.year_born || '—';
+  document.getElementById('detail-died').textContent = inventor.year_died || '—';
+  document.getElementById('detail-invention').textContent = inventor.invention;
+  document.getElementById('detail-description').textContent = inventor.description || 'No description available.';
+  document.getElementById('detail-related').textContent = inventor.related_people || '—';
+  
+  const isUserAdded = userInventors.find(u => u.id === inventor.id);
+  const editBtn = document.getElementById('detail-edit-btn');
+  if (isLoggedIn && isUserAdded) {
+    editBtn.style.display = 'flex';
+  } else {
+    editBtn.style.display = 'none';
+  }
+  
+  document.getElementById('list-view').style.display = 'none';
+  document.getElementById('detail-view').classList.remove('hidden');
+  lucide.createIcons();
+}
+
+async function confirmDelete() {
+  if (!deletingInventor) return;
+  const idx = userInventors.findIndex(u => u.id === deletingInventor.id);
+  if (idx !== -1) {
+    userInventors.splice(idx, 1);
+    saveInventorsToStorage();
+    showToast('Inventor deleted.');
+    renderCards();
+  } else {
+    showToast('Inventor not found.', true);
+  }
+  closeDeleteModal();
+}
+
+function applyConfig(cfg) {
+  const app = document.getElementById('app');
+  app.style.background = cfg.background_color || '#0f1117';
+
+  const title = document.getElementById('site-title');
+  title.textContent = cfg.site_title || 'Famous Inventors Directory';
+  title.style.fontFamily = `'${cfg.font_family||'Playfair Display'}', Georgia, serif`;
+  title.style.color = cfg.text_color || '#f0ece2';
+
+  const subtitle = document.getElementById('hero-subtitle');
+  subtitle.textContent = cfg.hero_subtitle || 'Explore the minds that shaped our world';
+  subtitle.style.fontFamily = `'${cfg.font_family||'Playfair Display'}', Georgia, serif`;
+  subtitle.style.color = cfg.text_color || '#f0ece2';
+
+  const baseSize = cfg.font_size || 16;
+  title.style.fontSize = `${baseSize * 1.15}px`;
+  subtitle.style.fontSize = `${baseSize * 1.8}px`;
+
+  renderCards();
+}
+
+// Initialize app with default config
+applyConfig({
+  site_title: 'Famous Inventors and Innovators',
+  hero_subtitle: 'Explore the minds that shaped our world',
+  background_color: '#0f1117',
+  surface_color: '#1e2030',
+  text_color: '#f0ece2',
+  primary_color: '#c9a227',
+  secondary_color: '#8b8fa3',
+  font_family: 'Playfair Display',
+  font_size: 16
+});
+  </script>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9e8b73cc01586a70',t:'MTc3NTU5MDI4NC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
